@@ -3,10 +3,8 @@ import { req, type Post, type User, } from '@/api'
 import { useRoute } from 'vue-router'
 import PostComponent from '@/components/PostComponent.vue'
 
-
 const route = useRoute()
 const user: User = JSON.parse(await req(`/user/${route.params.username}`))
-
 
 let userPosts: [Post, string][] = []
 
@@ -25,10 +23,17 @@ for (const postID of user.posts) {
 </script>
 
 <template>
-    <title>{{ user.name }}'s posts</title>
+    <title @click="() => $router.push('/')">
+        {{ user.name }}'s posts</title>
     <hr>
     <section v-for="[post, text] in userPosts">
         <PostComponent :post="post" :text="text" />
         <hr>
     </section>
 </template>
+
+<style scoped>
+title {
+    cursor: pointer;
+}
+</style>

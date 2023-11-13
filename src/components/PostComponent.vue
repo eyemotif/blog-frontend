@@ -2,26 +2,39 @@
 import { type Post, type PostID } from '@/api'
 import router from '@/router'
 
-defineProps<{
+const props = defineProps<{
     post: Post,
     text: string,
 }>()
 
-function navigateToPost(id: PostID) {
-    router.push(`/post/${id}`)
+
+function replyQuoteString(): string {
+    // this is ugly but i dont really give a shit
+    const divider = `· `
+    if (props.post.replies.length > 0 && props.post.quotes.length > 0) {
+        return divider + `${props.post.replies.length} ${props.post.replies.length == 1 ? 'reply'
+            : 'replies'}, ${props.post.quotes.length} ${props.post.quotes.length == 1 ? 'quote'
+                : 'quotes'}`
+    } else if (props.post.replies.length > 0) {
+        return divider + `${props.post.replies.length} ${props.post.replies.length == 1 ? 'reply' : 'replies'}`
+    } else if (props.post.quotes.length > 0) {
+        return divider + `${props.post.quotes.length} ${props.post.quotes.length == 1 ? 'quote'
+            : 'quotes'}`
+    } else {
+        return ''
+    }
 }
 </script>
 
 <template>
     <header>
-        <RouterLink :to="`/user/${post.author_username}`">@{{ post.author_username
-        }}</RouterLink> at {{ (new
-    Date(post.timestamp)).toLocaleString() }}:
+        <RouterLink :to="`/user/${post.author_username}`">@{{ post.author_username }}</RouterLink>:
     </header>
-    <article @click="() => navigateToPost(post.id)" v-html="$props.text"></article>
-    <footer>{{ post.replies.length }} {{ post.replies.length == 1 ? 'reply'
-        : 'replies' }}, {{ post.quotes.length }} {{ post.quotes.length == 1 ?
-        'quote' : 'quotes' }}</footer>
+    <article @click="() => $router.push(`/post/${post.id}`)" v-html="$props.text"></article>
+    <footer>
+        {{ (new Date(post.timestamp)).toLocaleString() }}
+        {{ replyQuoteString() }}
+    </footer>
 </template>
 
 <style scoped>
@@ -35,6 +48,7 @@ article {
 }
 
 footer {
+    margin-top: 1.5em;
     font-size: 0.75em
 }
 </style>

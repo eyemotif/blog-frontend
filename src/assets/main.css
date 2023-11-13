@@ -2,3 +2,8 @@ title {
     display: inherit;
     font-size: 1.5em;
 }
+
+p {
+    margin-top: 0.25em;
+    margin-bottom: 0.25em;
+}
