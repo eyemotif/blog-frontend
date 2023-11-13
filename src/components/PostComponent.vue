@@ -39,16 +39,15 @@ function replyQuoteString(): string {
 
 <style scoped>
 header {
-    font-size: 1em
-}
-
-article {
-    font-size: 1.75em;
-    cursor: pointer;
+    font-size: 1em;
 }
 
 footer {
     margin-top: 1.5em;
-    font-size: 0.75em
+    font-size: 0.75em;
+}
+
+article {
+    cursor: pointer;
 }
 </style>

@@ -17,7 +17,7 @@ for (const post of latestPostMetas) {
 </script>
 
 <template>
-    <title>latest posts</title>
+    <header id="title">latest posts</header>
     <hr>
     <section v-for="[post, text] in latestPosts">
         <PostComponent :post="post" :text="text" />

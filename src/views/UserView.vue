@@ -23,8 +23,8 @@ for (const postID of user.posts) {
 </script>
 
 <template>
-    <title @click="() => $router.push('/')">
-        {{ user.name }}'s posts</title>
+    <header id="title" @click="() => $router.push('/')">
+        {{ user.name }}'s posts</header>
     <hr>
     <section v-for="[post, text] in userPosts">
         <PostComponent :post="post" :text="text" />
@@ -33,7 +33,7 @@ for (const postID of user.posts) {
 </template>
 
 <style scoped>
-title {
+#title {
     cursor: pointer;
 }
 </style>
