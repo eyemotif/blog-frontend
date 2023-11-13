@@ -5,8 +5,6 @@ import PostComponent from '@/components/PostComponent.vue'
 const latestPostMetas: Post[] = JSON.parse(await req('/post/latest/10/0'))
 let latestPosts: [Post, string][] = []
 
-console.log('got posts:', latestPostMetas)
-
 for (const post of latestPostMetas) {
     try {
         const text = await req(`/post/text/${post.id}`)
@@ -26,10 +24,3 @@ for (const post of latestPostMetas) {
         <hr>
     </section>
 </template>
-
-<style scoped>
-title {
-    display: inherit;
-    font-size: xx-large;
-}
-</style>
