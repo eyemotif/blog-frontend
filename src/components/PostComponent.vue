@@ -1,16 +1,24 @@
 <script setup lang="ts">
-import { type Post } from '@/api'
+import { type Post, type PostID } from '@/api'
+import router from '@/router'
 
 defineProps<{
     post: Post,
     text: string,
 }>()
 
+function navigateToPost(id: PostID) {
+    router.push(`/post/${id}`)
+}
 </script>
 
 <template>
-    <header>{{ post.author_username }} at {{ (new Date(post.timestamp)).toLocaleString() }}:</header>
-    <article v-html="$props.text"></article>
+    <header>
+        <RouterLink :to="`/user/${post.author_username}`">@{{ post.author_username
+        }}</RouterLink> at {{ (new
+    Date(post.timestamp)).toLocaleString() }}:
+    </header>
+    <article @click="() => navigateToPost(post.id)" v-html="$props.text"></article>
     <footer>{{ post.replies.length }} {{ post.replies.length == 1 ? 'reply'
         : 'replies' }}, {{ post.quotes.length }} {{ post.quotes.length == 1 ?
         'quote' : 'quotes' }}</footer>
@@ -18,12 +26,15 @@ defineProps<{
 
 <style scoped>
 header {
-    font-size: small
+    font-size: 1em
 }
 
-/* article {} */
+article {
+    font-size: 1.75em;
+    cursor: pointer;
+}
 
 footer {
-    font-size: smaller
+    font-size: 0.75em
 }
 </style>

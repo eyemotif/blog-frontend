@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { req, type PostID, type Post } from '@/api'
+import { req, type Post } from '@/api'
 import PostComponent from '@/components/PostComponent.vue'
 
 const latestPostMetas: Post[] = JSON.parse(await req('/post/latest/10/0'))
@@ -20,14 +20,16 @@ for (const post of latestPostMetas) {
 
 <template>
     <title>latest posts</title>
+    <hr>
     <section v-for="[post, text] in latestPosts">
-        <hr>
         <PostComponent :post="post" :text="text" />
+        <hr>
     </section>
 </template>
 
 <style scoped>
 title {
+    display: inherit;
     font-size: xx-large;
 }
 </style>
