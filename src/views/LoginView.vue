@@ -19,7 +19,7 @@ async function submitLogin() {
     const formData = new FormData(form)
 
     try {
-        const authResponse = await fetch('http://localhost:8010/api/session', {
+        const authResponse = await fetch('/api/session', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

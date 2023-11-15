@@ -16,7 +16,7 @@ async function post() {
     const formData = new FormData(form)
 
     try {
-        const postFinishResponse = await fetch(`http://localhost:8010/api/post/create/finish?session=${sessionToken}`, {
+        const postFinishResponse = await fetch(`/api/post/create/finish?session=${sessionToken}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

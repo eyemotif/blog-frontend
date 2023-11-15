@@ -17,5 +17,5 @@ export type Post = {
 }
 
 export async function req(path: string): Promise<string> {
-    return (await fetch('http://localhost:8010/api' + path)).text()
+    return (await fetch('/api' + path)).text()
 }

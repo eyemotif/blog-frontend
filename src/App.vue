@@ -10,7 +10,7 @@ const hasLoggedIn = computed(() => cookies.isKey('frithblog-session'))
 async function startPost() {
   const sessionToken = cookies.get('frithblog-session')
   try {
-    const postCreationResponse = await fetch(`http://localhost:8010/api/post/create/start?session=${sessionToken}`, {
+    const postCreationResponse = await fetch(`/api/post/create/start?session=${sessionToken}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
