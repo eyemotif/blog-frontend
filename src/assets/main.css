@@ -1,3 +1,5 @@
+@import './fonts.css';
+
 html,
 body,
 #app {
@@ -13,19 +15,35 @@ article {
     font-size: 20px;
 }
 
-article p {
-    font-size: 1em;
-    margin-top: 0.25em;
-    margin-bottom: 0.25em;
+article * {
+    margin-top: 0.75em;
+    margin-bottom: 0.75em;
 }
 
-article h1,
-article h2,
-article h3,
-article h4,
-article h5,
-article h6 {
+article p {
+    font-size: 1em;
+}
+
+article h1 {
     font-size: 1.5em;
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
+}
+
+article h2 {
+    font-size: 1.25em;
+}
+
+article h3 {
+    font-size: 1em;
+}
+
+article h4 {
+    font-size: 0.9em;
+}
+
+article h5 {
+    font-size: 0.8em;
+}
+
+article h6 {
+    font-size: 0.7em;
 }

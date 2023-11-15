@@ -1,0 +1,20 @@
+@font-face {
+    font-family: "Ubuntu";
+    font-style: normal;
+    src: url('@/assets/Ubuntu.ttf');
+}
+
+@font-face {
+    font-family: "Ubuntu Mono";
+    font-style: normal;
+    src: url('@/assets/UbuntuMono.ttf');
+}
+
+body {
+    font-family: "Ubuntu";
+}
+
+a,
+code {
+    font-family: "Ubuntu Mono";
+}
