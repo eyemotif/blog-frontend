@@ -12,7 +12,7 @@ cookies.remove('frithblog-session')
 
 async function submitLogin() {
     const submitButton = document.getElementById('submit')! as HTMLButtonElement
-    submitButton.setAttribute('disabled', '')
+    submitButton.disabled = true
     submitButton.value = 'loading...'
 
     const form = document.getElementById('form')! as HTMLFormElement
