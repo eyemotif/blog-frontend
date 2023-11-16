@@ -20,6 +20,12 @@ article * {
     margin-bottom: 0.75em;
 }
 
+article img {
+    /* 16:9 */
+    max-width: 384px;
+    max-height: 216px;
+}
+
 article p {
     font-size: 1em;
 }

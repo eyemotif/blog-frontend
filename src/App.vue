@@ -19,7 +19,12 @@ async function startPost() {
     })
 
     if (postCreationResponse.status >= 400) {
-      throw `error status ${postCreationResponse.status}`
+      if (postCreationResponse.status === 401) {
+        cookies.remove('frithblog-session')
+        window.location.reload()
+      } else {
+        throw `error status ${postCreationResponse.status}`
+      }
     }
 
     const newPostID = await postCreationResponse.text()

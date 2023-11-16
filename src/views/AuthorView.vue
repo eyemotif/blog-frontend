@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useCookies } from 'vue3-cookies'
 
@@ -36,30 +36,36 @@ async function post() {
     }
 }
 
-const fileInput = document.getElementById('upload')! as HTMLInputElement
 let imageURLs = ref<string[]>([])
+let imageUploadText = ref<string | null>(null)
 
-fileInput.addEventListener('change', async event => {
-    fileInput.disabled = true
+onMounted(() => {
+    const fileInput = document.getElementById('upload')! as HTMLInputElement
 
-    const target = event.target as EventTarget & { files: FileList }
+    fileInput.addEventListener('change', async event => {
+        fileInput.disabled = true
 
-    for (let i = 0; i < target.files.length; i++) {
-        fileInput.value = `uploading file ${i + 1}/${target.files.length}`
-        const maybe_error = await uploadImage(target.files[i])
+        const target = event.target as EventTarget & { files: FileList }
 
-        if (maybe_error !== null) {
-            console.error(`error uploadin file ${i}: ${maybe_error}`)
-            break
+        for (let i = 0; i < target.files.length; i++) {
+            imageUploadText.value = `uploading file ${i + 1}/${target.files.length}`
+            const maybe_error = await uploadImage(target.files[i])
+
+            if (maybe_error !== null) {
+                console.error(`error uploading file ${i}: ${maybe_error}`)
+                imageUploadText.value = 'error uploading files'
+                fileInput.disabled = false
+                return
+            }
         }
-    }
 
-    fileInput.disabled = false
-    fileInput.value = 'error uploading files'
+        fileInput.disabled = false
+        imageUploadText.value = null
+    })
 })
 
 async function uploadImage(file: File): Promise<string | null> {
-    const fileUploadURL = `/api/post/create/image/${route.params.id}/${file.name}`
+    const fileUploadURL = `/api/post/create/image/${route.params.id}/${file.name}?session=${sessionToken}`
 
     try {
         const fileCreationResponse = await fetch(fileUploadURL, {
@@ -70,7 +76,11 @@ async function uploadImage(file: File): Promise<string | null> {
         }
 
         const socket = new WebSocket(`wss://blog.frith.gay${fileUploadURL}`)
-        socket.send(await file.arrayBuffer())
+        socket.addEventListener('open',
+            async () => {
+                socket.send(await file.arrayBuffer())
+                socket.close()
+            })
 
         const imageURL = await fileCreationResponse.text()
         imageURLs.value.push(imageURL)
@@ -83,7 +93,9 @@ async function uploadImage(file: File): Promise<string | null> {
 }
 
 function insertImageMarkdown(url: string) {
-    const imageMarkdown = `[alt text](${url} "title")`
+    console.log('insert', url)
+
+    const imageMarkdown = `\n![alt text](${url} "title")`
     const textInput = document.getElementById('text')! as HTMLTextAreaElement
 
     if (textInput.textContent === null) {
@@ -100,12 +112,16 @@ function insertImageMarkdown(url: string) {
 
     <form id="form" @submit="e => { e.preventDefault(); post() }">
         <textarea id="text" name="text"></textarea>
-        <input type="file" id="upload" value="upload images" multiple>
+        <label for="upload">upload images: </label>
+        <input type="file" id="upload" multiple>
         <input type="submit" value="post">
     </form>
-    <div id="images" v-if="imageURLs.length > 0">
-        <hr>
-        <span v-for="url in imageURLs" @click="insertImageMarkdown(url)">{{ url }}</span>
+    <hr>
+    <div id="status">
+        <p>{{ imageUploadText }}</p>
+        <ul id="images" v-if="imageURLs.length > 0">
+            <li v-for="url in imageURLs"><span @click="insertImageMarkdown(url)">{{ url }}</span></li>
+        </ul>
     </div>
 </template>
 
@@ -127,5 +143,9 @@ form {
 form input[type=button],
 form input[type=submit] {
     margin-right: 1em;
+}
+
+ul {
+    list-style-type: none;
 }
 </style>
