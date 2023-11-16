@@ -98,11 +98,7 @@ function insertImageMarkdown(url: string) {
     const imageMarkdown = `\n![alt text](${url} "title")`
     const textInput = document.getElementById('text')! as HTMLTextAreaElement
 
-    if (textInput.textContent === null) {
-        textInput.textContent = imageMarkdown
-    } else {
-        textInput.textContent += imageMarkdown
-    }
+    textInput.value += imageMarkdown
 }
 
 </script>
@@ -113,7 +109,8 @@ function insertImageMarkdown(url: string) {
     <form id="form" @submit="e => { e.preventDefault(); post() }">
         <textarea id="text" name="text"></textarea>
         <label for="upload">upload images: </label>
-        <input type="file" id="upload" multiple>
+        <input type="file" id="upload" multiple
+            accept="image/apng,image/avif,image/gif,image/jpeg,image/png,image/svg+xml,image/webp,">
         <input type="submit" value="post">
     </form>
     <hr>
@@ -147,5 +144,9 @@ form input[type=submit] {
 
 ul {
     list-style-type: none;
+}
+
+ul.images li {
+    cursor: pointer;
 }
 </style>

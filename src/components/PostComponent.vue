@@ -59,7 +59,7 @@ footer {
     font-size: 0.75em;
 }
 
-article {
+*:not(.large) article {
     cursor: pointer;
 }
 </style>
