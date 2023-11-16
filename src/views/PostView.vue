@@ -13,10 +13,10 @@ const text = await req(`/post/text/${route.params.id}`)
     <header id="title" @click="() => $router.push('/')">
         post</header>
     <hr>
-    <PostComponent :post="post" :text="text" />
+    <PostComponent :post="post" :text="text" large />
 </template>
 
-<style scoped>
+<style>
 #title {
     cursor: pointer;
 }

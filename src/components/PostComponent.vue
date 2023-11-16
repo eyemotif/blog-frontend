@@ -5,6 +5,7 @@ import router from '@/router'
 const props = defineProps<{
     post: Post,
     text: string,
+    large?: boolean,
 }>()
 
 
@@ -24,13 +25,24 @@ function replyQuoteString(): string {
         return ''
     }
 }
+
+function getClass(): string {
+    if (props.large === true) {
+        return 'large'
+    } else {
+        return ''
+    }
+}
 </script>
 
 <template>
     <header>
         <RouterLink :to="`/user/${post.author_username}`">@{{ post.author_username }}</RouterLink>:
     </header>
-    <article @click="() => $router.push(`/post/${post.id}`)" v-html="$props.text"></article>
+    <article :class="getClass()" @click="() =>
+        $router.push(`/post/${post.id}`)
+        " v-html="$props.text">
+    </article>
     <footer>
         {{ (new Date(post.timestamp)).toLocaleString() }}
         {{ replyQuoteString() }}

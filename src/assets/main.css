@@ -22,8 +22,14 @@ article * {
 
 article img {
     /* 16:9 */
-    max-width: 384px;
-    max-height: 216px;
+    max-width: 256px;
+    max-height: 144px;
+}
+
+article.large img {
+    /* 16:9 */
+    max-width: 512;
+    max-height: 288px;
 }
 
 article p {
