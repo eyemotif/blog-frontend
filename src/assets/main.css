@@ -31,9 +31,10 @@ article.large img {
 }
 
 article.small {
-    max-height: 15em;
+    max-height: 14em;
     overflow: hidden;
     text-overflow: ellipsis;
+    cursor: pointer;
 }
 
 article p {

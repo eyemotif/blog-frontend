@@ -88,8 +88,4 @@ footer {
     margin-top: 1.5em;
     font-size: 0.75em;
 }
-
-.small article {
-    cursor: pointer;
-}
 </style>
