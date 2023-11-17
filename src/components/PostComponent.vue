@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { type Post, type PostID } from '@/api'
 import router from '@/router'
+import { onMounted } from 'vue'
 
 const props = defineProps<{
     post: Post,
@@ -30,18 +31,44 @@ function getClass(): string {
     if (props.large === true) {
         return 'large'
     } else {
-        return ''
+        return 'small'
     }
 }
+
+function goToPost(postID: PostID) {
+    if (props.large !== true) {
+        router.push(`/post/${postID}`)
+    }
+}
+
+
+onMounted(() => {
+    if (props.large === true) {
+        // HACK: replace all img tags with link + images when on a post page. do
+        // better, me!
+
+    }
+
+    for (const imgTag of document.querySelectorAll('article img')) {
+        const img = imgTag as HTMLImageElement
+        img.loading = 'lazy'
+
+        if (props.large === true) {
+            const anchor = document.createElement('a')
+            anchor.href = img.src
+            img.parentNode!.replaceChild(anchor, img)
+            anchor.appendChild(img)
+        }
+    }
+})
+
 </script>
 
 <template>
     <header>
         <RouterLink :to="`/user/${post.author_username}`">@{{ post.author_username }}</RouterLink>:
     </header>
-    <article :class="getClass()" @click="() =>
-        $router.push(`/post/${post.id}`)
-        " v-html="$props.text">
+    <article :class="getClass()" @click="() => goToPost(post.id)" v-html="$props.text">
     </article>
     <footer>
         {{ (new Date(post.timestamp)).toLocaleString() }}
@@ -59,7 +86,7 @@ footer {
     font-size: 0.75em;
 }
 
-*:not(.large) article {
+.small article {
     cursor: pointer;
 }
 </style>

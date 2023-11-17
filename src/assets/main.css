@@ -22,14 +22,20 @@ article * {
 
 article img {
     /* 16:9 */
-    max-width: 256px;
-    max-height: 144px;
+    max-width: 384px;
+    max-height: 216px;
 }
 
 article.large img {
     /* 16:9 */
     max-width: 512;
     max-height: 288px;
+}
+
+article.small {
+    max-height: 15em;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 article p {
