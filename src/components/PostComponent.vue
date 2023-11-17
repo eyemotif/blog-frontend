@@ -43,17 +43,13 @@ function goToPost(postID: PostID) {
 
 
 onMounted(() => {
-    if (props.large === true) {
-        // HACK: replace all img tags with link + images when on a post page. do
-        // better, me!
-
-    }
-
     for (const imgTag of document.querySelectorAll('article img')) {
         const img = imgTag as HTMLImageElement
         img.loading = 'lazy'
 
         if (props.large === true) {
+            // HACK: replace all img tags with link + images when on a post page. do
+            // better, me!
             const anchor = document.createElement('a')
 
             anchor.href = `${img.src}?raw=true`
@@ -61,6 +57,7 @@ onMounted(() => {
 
             img.parentNode!.replaceChild(anchor, img)
             anchor.appendChild(img)
+
         }
     }
 })

@@ -8,7 +8,7 @@ const user: User = JSON.parse(await req(`/user/${route.params.username}`))
 
 let userPosts: [Post, string][] = []
 
-for (const postID of user.posts) {
+for (const postID of user.posts.reverse()) {
     try {
         const meta: Post = JSON.parse(await req(`/post/meta/${postID}`))
         const text = await req(`/post/text/${postID}`)
