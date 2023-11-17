@@ -55,7 +55,10 @@ onMounted(() => {
 
         if (props.large === true) {
             const anchor = document.createElement('a')
+
             anchor.href = `${img.src}?raw=true`
+            img.src = `${img.src}?large=true`
+
             img.parentNode!.replaceChild(anchor, img)
             anchor.appendChild(img)
         }
