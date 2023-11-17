@@ -20,6 +20,18 @@ article * {
     margin-bottom: 0.75em;
 }
 
+article img {
+    /* 16:9 */
+    max-width: 256px;
+    max-height: 256px;
+}
+
+article.large img {
+    /* 16:9 */
+    max-width: 512;
+    max-height: 288px;
+}
+
 article.small {
     max-height: 15em;
     overflow: hidden;
