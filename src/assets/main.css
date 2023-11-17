@@ -21,15 +21,13 @@ article * {
 }
 
 article img {
-    /* 16:9 */
-    max-width: 256px;
-    max-height: 256px;
+    max-width: 128px;
+    max-height: 128px;
 }
 
 article.large img {
-    /* 16:9 */
     max-width: 512;
-    max-height: 288px;
+    max-height: 512px;
 }
 
 article.small {
