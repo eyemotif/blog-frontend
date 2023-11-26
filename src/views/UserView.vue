@@ -10,8 +10,8 @@ let userPosts: [Post, string][] = []
 
 for (const postID of user.posts.reverse()) {
     try {
-        const meta: Post = JSON.parse(await req(`/post/meta/${postID}`))
-        const text = await req(`/post/text/${postID}`)
+        const meta: Post = JSON.parse(await req(`/post/${postID}/meta`))
+        const text = await req(`/post/${postID}/text`)
 
         userPosts.push([meta, text])
     }

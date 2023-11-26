@@ -7,7 +7,7 @@ let latestPosts: [Post, string][] = []
 
 for (const post of latestPostMetas) {
     try {
-        const text = await req(`/post/text/${post.id}`)
+        const text = await req(`/post/${post.id}/text`)
         latestPosts.push([post, text])
     }
     catch (err) {

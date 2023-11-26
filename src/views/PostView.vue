@@ -5,8 +5,8 @@ import { req, type Post } from '@/api'
 import { ref } from 'vue'
 
 const route = useRoute()
-const post: Post = JSON.parse(await req(`/post/meta/${route.params.id}`))
-const text = await req(`/post/text/${route.params.id}`)
+const post: Post = JSON.parse(await req(`/post/${route.params.id}/meta`))
+const text = await req(`/post/${route.params.id}/text`)
 
 let selectionText = ref('')
 let quoteButtonText = ref('quote')
