@@ -16,6 +16,10 @@ export type Post = {
     quotes: PostID[],
 }
 
+export type PostCreationOptions = {
+    reply_to?: string
+}
+
 export async function req(path: string): Promise<string> {
     return (await fetch('/api' + path)).text()
 }

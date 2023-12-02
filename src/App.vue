@@ -1,21 +1,27 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted, type ComputedRef } from 'vue'
 import { RouterLink, RouterView, useRouter } from 'vue-router'
 import { useCookies } from 'vue3-cookies'
+import type { PostID, PostCreationOptions } from './api'
+
+type ButtonState = 'login' | 'create' | 'reply' | 'hide'
 
 const { cookies } = useCookies()
 const router = useRouter()
-const hasLoggedIn = computed(() => cookies.isKey('frithblog-session'))
 
-async function startPost() {
+async function startPost(replyTo?: PostID) {
   const sessionToken = cookies.get('frithblog-session')
   try {
+    const postCreationOptions: PostCreationOptions = {
+      reply_to: replyTo
+    }
+
     const postCreationResponse = await fetch(`/api/post/create/start?session=${sessionToken}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: '{}' // TODO: replies
+      body: JSON.stringify(postCreationOptions)
     })
 
     if (postCreationResponse.status >= 400) {
@@ -34,12 +40,30 @@ async function startPost() {
     console.error(`could not start post: ${e}`)
   }
 }
+
+function getButtonState(): ButtonState {
+  const path = router.currentRoute.value.path
+
+  if (path.startsWith('/post')) {
+    return 'reply'
+  } else if (path.startsWith('/author') || path.startsWith('/login')) {
+    return 'hide'
+  } else if (cookies.isKey('frithblog-session')) {
+    return 'create'
+  } else {
+    return 'login'
+  }
+}
+
 </script>
 
 <template>
   <nav id="right">
-    <RouterLink v-if="!hasLoggedIn" to="login"><button>login</button></RouterLink>
-    <button v-if="hasLoggedIn" @click="startPost()">create post</button>
+    <RouterLink v-if="getButtonState() === 'login'" to="login"><button>login</button></RouterLink>
+    <button v-if="getButtonState() === 'create'" @click="startPost()">create post</button>
+    <button v-if="getButtonState() === 'reply'" @click="startPost($route.params.id as string)">
+      reply
+    </button>
   </nav>
   <Suspense>
     <RouterView />
