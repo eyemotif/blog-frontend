@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { ImageUploadOptions, PostFinishOptions } from '@/api'
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useCookies } from 'vue3-cookies'
@@ -16,13 +17,18 @@ async function post() {
     const form = document.getElementById('form')! as HTMLFormElement
     const formData = new FormData(form)
 
+    const postFinishOptions: PostFinishOptions = {
+        session: sessionToken,
+        post_id: route.params.id as string,
+        text: formData.get('text') as string
+    }
     try {
-        const postFinishResponse = await fetch(`/api/post/create/finish?session=${sessionToken}`, {
+        const postFinishResponse = await fetch(`/api/post/create/finish`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ 'post_id': route.params.id, 'text': formData.get('text') })
+            body: JSON.stringify(postFinishOptions)
         })
 
         if (postFinishResponse.status >= 400) {
@@ -65,17 +71,25 @@ onMounted(() => {
 })
 
 async function uploadImage(file: File): Promise<string | null> {
-    const fileUploadURL = `/api/post/create/image/${route.params.id}/${file.name}?session=${sessionToken}`
 
     try {
-        const fileCreationResponse = await fetch(fileUploadURL, {
-            method: 'POST'
+        const fileCreationOptions: ImageUploadOptions = {
+            session: sessionToken,
+            name: file.name
+        }
+        const fileCreationResponse = await fetch(`/api/post/create/image/${route.params.id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(fileCreationOptions)
         })
+        
         if (fileCreationResponse.status >= 400) {
             return `creation post request status ${fileCreationResponse.status}`
         }
 
-        const socket = new WebSocket(`wss://blog.frith.gay${fileUploadURL}`)
+        const socket = new WebSocket(`wss://blog.frith.gay/api/post/create/image/${route.params.id}/${file.name}`)
         socket.addEventListener('open',
             async () => {
                 socket.send(await file.arrayBuffer())

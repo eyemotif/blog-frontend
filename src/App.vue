@@ -13,10 +13,11 @@ async function startPost(replyTo?: PostID) {
   const sessionToken = cookies.get('frithblog-session')
   try {
     const postCreationOptions: PostCreationOptions = {
+      session: sessionToken,
       reply_to: replyTo
     }
 
-    const postCreationResponse = await fetch(`/api/post/create/start?session=${sessionToken}`, {
+    const postCreationResponse = await fetch(`/api/post/create/start`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
