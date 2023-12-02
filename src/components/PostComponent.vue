@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type Post, type PostID } from '@/api'
+import { req, type Post, type PostID } from '@/api'
 import router from '@/router'
 import { onMounted } from 'vue'
 
@@ -9,6 +9,12 @@ const props = defineProps<{
     large?: boolean,
 }>()
 
+let replyUsername: string | null = null
+
+if (props.post.reply_to !== null) {
+    const parentPost: Post = JSON.parse(await req(`/post/${props.post.reply_to}/meta`))
+    replyUsername = parentPost.author_username
+}
 
 function replyQuoteString(): string {
     // this is ugly but i dont really give a shit
@@ -42,7 +48,7 @@ function goToPost(postID: PostID) {
 }
 
 
-onMounted(() => {
+onMounted(async () => {
     for (const imgTag of document.querySelectorAll('article img')) {
         const img = imgTag as HTMLImageElement
         img.loading = 'lazy'
@@ -65,9 +71,21 @@ onMounted(() => {
 </script>
 
 <template>
-    <header>
-        <RouterLink :to="`/user/${post.author_username}`">@{{ post.author_username }}</RouterLink>:
+    <header v-if="replyUsername !== null">
+        <RouterLink :to="`/user/${post.author_username}`">
+            <span>@{{ post.author_username }}</span>
+        </RouterLink>
+        <span>, replying to </span>
+        <RouterLink :to="`/post/${post.reply_to}`">
+            <span>@{{ replyUsername }}'s post</span>
+        </RouterLink>:
     </header>
+    <header v-else>
+        <RouterLink :to="`/user/${post.author_username}`">
+            <span>@{{ post.author_username }}</span>
+        </RouterLink>:
+    </header>
+
     <article :class="getClass()" @click="() => goToPost(post.id)" v-html="$props.text">
     </article>
     <footer>
