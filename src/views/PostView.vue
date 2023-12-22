@@ -2,22 +2,29 @@
 import { useRoute } from 'vue-router'
 import PostComponent from '@/components/PostComponent.vue'
 import { req, type Post } from '@/api'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch, type Ref } from 'vue'
 
 const route = useRoute()
-const thread: [Post, string][] = [[
-    JSON.parse(await req(`/post/${route.params.id}/meta`)),
-    await req(`/post/${route.params.id}/text`)
-]]
+let thread: Ref<[Post, string][]> = ref([])
 
-while (thread[thread.length - 1][0].reply_to !== null) {
-    const newID = thread[thread.length - 1][0].reply_to
+watch(route, async (route) => {
+    thread.value = [[
+        JSON.parse(await req(`/post/${route.params.id}/meta`)),
+        await req(`/post/${route.params.id}/text`)
+    ]]
 
-    const post = JSON.parse(await req(`/post/${newID}/meta`))
-    const text = await req(`/post/${newID}/text`)
 
-    thread.push([post, text])
-}
+    while (thread.value[thread.value.length - 1][0].reply_to !== null) {
+        const newID = thread.value[thread.value.length - 1][0].reply_to
+
+        const post = JSON.parse(await req(`/post/${newID}/meta`))
+        const text = await req(`/post/${newID}/text`)
+
+        thread.value.push([post, text])
+    }
+
+    thread.value.reverse()
+}, { immediate: true })
 
 
 // FIXME: quoting for thread view
@@ -59,7 +66,7 @@ while (thread[thread.length - 1][0].reply_to !== null) {
 
 
 onMounted(() => {
-    if (thread.length > 1) {
+    if (thread.value.length > 1) {
         // FIXME: "TypeError: null is not an object (evaluating 'document.getElementById(`post-${s.params.id}`).parentElement')"
         document
             .getElementById(`post-${route.params.id}`)!
@@ -75,8 +82,9 @@ onMounted(() => {
     <header id="title" @click="() => $router.push('/')">
         post</header>
     <hr>
-    <section v-for="[post, text] in thread.reverse()">
-        <PostComponent :post="post" :text="text" large />
+    <section v-for="[post, text] in thread">
+        <PostComponent v-if="post.id === $route.params.id" :post="post" :text="text" large />
+        <PostComponent v-else :post="post" :text="text" />
         <hr>
     </section>
     <!-- <div id="quote" v-if="selectionText !== ''">
