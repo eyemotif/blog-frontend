@@ -8,22 +8,25 @@ const route = useRoute()
 let thread: Ref<[Post, string][]> = ref([])
 
 watch(route, async (route) => {
-    thread.value = [[
-        JSON.parse(await req(`/post/${route.params.id}/meta`)),
-        await req(`/post/${route.params.id}/text`)
-    ]]
+    let tempThread: [Post, string][] = []
 
+    // reverse order
+    const children: Post[] = JSON.parse(await req(`/post/thread/${route.params.id}`))
+    for (const post of children) {
+        const text = await req(`/post/${post.id}/text`)
+        tempThread.push([post, text])
+    }
 
-    while (thread.value[thread.value.length - 1][0].reply_to !== null) {
-        const newID = thread.value[thread.value.length - 1][0].reply_to
+    while (tempThread[tempThread.length - 1][0].reply_to !== null) {
+        const newID = tempThread[tempThread.length - 1][0].reply_to
 
         const post = JSON.parse(await req(`/post/${newID}/meta`))
         const text = await req(`/post/${newID}/text`)
 
-        thread.value.push([post, text])
+        tempThread.push([post, text])
     }
 
-    thread.value.reverse()
+    thread.value = tempThread.reverse()
 }, { immediate: true })
 
 

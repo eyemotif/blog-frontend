@@ -17,6 +17,7 @@ async function startPost(replyTo?: PostID) {
       reply_to: replyTo
     }
 
+
     const postCreationResponse = await fetch(`/api/post/create/start`, {
       method: 'POST',
       headers: {
@@ -30,7 +31,7 @@ async function startPost(replyTo?: PostID) {
         cookies.remove('frithblog-session')
         window.location.reload()
       } else {
-        throw `error status ${postCreationResponse.status}`
+        throw `error status ${postCreationResponse.status} ${postCreationResponse.statusText}`
       }
     }
 
@@ -45,12 +46,10 @@ async function startPost(replyTo?: PostID) {
 function getButtonState(): ButtonState {
   const path = router.currentRoute.value.path
 
-  if (path.startsWith('/post')) {
-    return 'reply'
-  } else if (path.startsWith('/author') || path.startsWith('/login')) {
+  if (path.startsWith('/author') || path.startsWith('/login')) {
     return 'hide'
   } else if (cookies.isKey('frithblog-session')) {
-    return 'create'
+    return path.startsWith('/post') ? 'reply' : 'create'
   } else {
     return 'login'
   }
