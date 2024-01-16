@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
 import PostComponent from '@/components/PostComponent.vue'
-import { req, type Post } from '@/api'
+import { req, type Post, postText } from '@/api'
 import { onMounted, ref, watch, type Ref } from 'vue'
 import { useCookies } from 'vue3-cookies'
 
@@ -15,7 +15,7 @@ watch(route, async (route) => {
     // reverse order, includes current post
     const children: Post[] = JSON.parse(await req(`/post/thread/${route.params.id}`))
     for (const post of children) {
-        const text = await req(`/post/${post.id}/text${cookies.isKey('frithblog-session') ? '/member' : ''}`)
+        const text = await postText(post.id, cookies.get('frithblog-session'))
         tempThread.push([post, text])
     }
 
@@ -23,8 +23,7 @@ watch(route, async (route) => {
         const newID = tempThread[tempThread.length - 1][0].reply_to
 
         const post = JSON.parse(await req(`/post/${newID}/meta`))
-        const text = await req(`/post/${newID}/text${cookies.isKey('frithblog-session') ? '/member' : ''}`)
-
+        const text = await postText(post.id, cookies.get('frithblog-session'))
         tempThread.push([post, text])
     }
 

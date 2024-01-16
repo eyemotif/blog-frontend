@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { req, type Post } from '@/api'
+import { req, type Post, postText } from '@/api'
 import PostComponent from '@/components/PostComponent.vue'
 import { useCookies } from 'vue3-cookies'
 
@@ -10,7 +10,7 @@ let latestPosts: [Post, string][] = []
 for (const post of latestPostMetas) {
     try {
 
-        const text = await req(`/post/${post.id}/text${cookies.isKey('frithblog-session') ? '/member' : ''}`)
+        const text = await postText(post.id, cookies.get('frithblog-session'))
         latestPosts.push([post, text])
     }
     catch (err) {

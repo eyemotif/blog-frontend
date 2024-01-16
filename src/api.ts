@@ -31,5 +31,20 @@ export type ImageUploadOptions = {
 }
 
 export async function req(path: string): Promise<string> {
-    return (await fetch('/api' + path)).text()
+    return (await fetch('/api' + path, { headers: { 'Content-Type': 'application/json' } })).text()
+}
+export async function postText(postId: PostID, session?: string): Promise<string> {
+    if (session === undefined || session.trim().length == 0) {
+        return await req(`/post/${postId}/text`)
+    } else {
+
+        const postCreationResponse = await fetch(`/api/post/${postId}/text/member`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ session })
+        })
+        return await postCreationResponse.text()
+    }
 }
