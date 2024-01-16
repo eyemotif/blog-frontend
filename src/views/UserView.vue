@@ -15,7 +15,8 @@ for (const postID of user.posts.reverse()) {
         const meta: Post = JSON.parse(await req(`/post/${postID}/meta`))
         const text = await postText(postID, cookies.get('frithblog-session'))
 
-        userPosts.push([meta, text])
+        if (text !== null)
+            userPosts.push([meta, text])
     }
     catch (err) {
         console.log(`error getting post ${postID}: ${err}`)

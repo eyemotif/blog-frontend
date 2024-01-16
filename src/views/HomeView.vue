@@ -9,9 +9,9 @@ let latestPosts: [Post, string][] = []
 
 for (const post of latestPostMetas) {
     try {
-
         const text = await postText(post.id, cookies.get('frithblog-session'))
-        latestPosts.push([post, text])
+        if (text !== null)
+            latestPosts.push([post, text])
     }
     catch (err) {
         console.log(`error getting post ${post.id}: ${err}`)

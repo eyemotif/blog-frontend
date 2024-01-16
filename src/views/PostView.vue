@@ -16,7 +16,8 @@ watch(route, async (route) => {
     const children: Post[] = JSON.parse(await req(`/post/thread/${route.params.id}`))
     for (const post of children) {
         const text = await postText(post.id, cookies.get('frithblog-session'))
-        tempThread.push([post, text])
+        if (text !== null)
+            tempThread.push([post, text])
     }
 
     while (tempThread[tempThread.length - 1][0].reply_to !== null) {
@@ -24,7 +25,8 @@ watch(route, async (route) => {
 
         const post = JSON.parse(await req(`/post/${newID}/meta`))
         const text = await postText(post.id, cookies.get('frithblog-session'))
-        tempThread.push([post, text])
+        if (text !== null)
+            tempThread.push([post, text])
     }
 
     thread.value = tempThread.reverse()
