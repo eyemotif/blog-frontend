@@ -91,6 +91,7 @@ onMounted(async () => {
     <footer>
         {{ (new Date(post.timestamp)).toLocaleString() }}
         {{ replyQuoteString() }}
+        {{ post.is_private ? '· private post' : '' }}
     </footer>
 </template>
 

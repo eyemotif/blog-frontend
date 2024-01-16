@@ -16,6 +16,7 @@ export type Post = {
     reply_to: PostID | null,
     replies: PostID[],
     quotes: PostID[],
+    is_private: boolean,
 }
 
 export type PostCreationOptions = {
