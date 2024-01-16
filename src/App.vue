@@ -59,7 +59,7 @@ function getButtonState(): ButtonState {
 
 <template>
   <nav id="right">
-    <RouterLink v-if="getButtonState() === 'login'" to="login"><button>login</button></RouterLink>
+    <RouterLink v-if="getButtonState() === 'login'" to="/login"><button>login</button></RouterLink>
     <button v-if="getButtonState() === 'create'" @click="startPost()">create post</button>
     <button v-if="getButtonState() === 'reply'" @click="startPost($route.params.id as string)">
       reply

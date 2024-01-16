@@ -2,8 +2,10 @@
 import { req, type Post, type User, } from '@/api'
 import { useRoute } from 'vue-router'
 import PostComponent from '@/components/PostComponent.vue'
+import { useCookies } from 'vue3-cookies'
 
 const route = useRoute()
+const { cookies } = useCookies()
 const user: User = JSON.parse(await req(`/user/${route.params.username}`))
 
 let userPosts: [Post, string][] = []
@@ -11,7 +13,7 @@ let userPosts: [Post, string][] = []
 for (const postID of user.posts.reverse()) {
     try {
         const meta: Post = JSON.parse(await req(`/post/${postID}/meta`))
-        const text = await req(`/post/${postID}/text`)
+        const text = await req(`/post/${postID}/text${cookies.isKey('frithblog-session') ? '/member' : ''}`)
 
         userPosts.push([meta, text])
     }
