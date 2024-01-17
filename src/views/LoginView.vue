@@ -37,6 +37,7 @@ async function submitLogin() {
     }
     catch (e) {
         console.error(`could not login: ${e}`)
+        router.push('/')
     }
 }
 </script>

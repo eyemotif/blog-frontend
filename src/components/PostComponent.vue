@@ -63,7 +63,6 @@ onMounted(async () => {
 
             img.parentNode!.replaceChild(anchor, img)
             anchor.appendChild(img)
-
         }
     }
 })
@@ -73,7 +72,7 @@ onMounted(async () => {
 <template>
     <header v-if="replyUsername !== null">
         <RouterLink :to="`/user/${post.author_username}`">
-            <span>@{{ post.author_username }}</span>
+            <span class="author">@{{ post.author_username }}</span>
         </RouterLink>
         <span>, replying to </span>
         <RouterLink :to="`/post/${post.reply_to}`">
@@ -82,7 +81,7 @@ onMounted(async () => {
     </header>
     <header v-else>
         <RouterLink :to="`/user/${post.author_username}`">
-            <span>@{{ post.author_username }}</span>
+            <span class="author">@{{ post.author_username }}</span>
         </RouterLink>:
     </header>
 

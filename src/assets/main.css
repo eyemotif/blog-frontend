@@ -6,6 +6,19 @@ body,
     height: 100%;
 }
 
+body {
+    background-color: #25231e;
+    color: #fffde3;
+}
+
+a {
+    color: #FFDD55;
+}
+
+a:has(.author) {
+    text-decoration: none;
+}
+
 #title {
     display: inherit;
     font-size: 1.5em;

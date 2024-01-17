@@ -71,7 +71,6 @@ onMounted(() => {
 })
 
 async function uploadImage(file: File): Promise<string | null> {
-
     try {
         const fileCreationOptions: ImageUploadOptions = {
             session: sessionToken,
@@ -84,23 +83,27 @@ async function uploadImage(file: File): Promise<string | null> {
             },
             body: JSON.stringify(fileCreationOptions)
         })
-        
+
         if (fileCreationResponse.status >= 400) {
             return `creation post request status ${fileCreationResponse.status}`
         }
 
         const socket = new WebSocket(`wss://blog.frith.gay/api/post/create/image/${route.params.id}/${file.name}`)
-        socket.addEventListener('open',
-            async () => {
+        socket.addEventListener('open', () => {
+            // server will send "pong" when ready
+            console.log(`${file.name}: waiting for goahead message...`)
+            socket.addEventListener('message', async () => {
+                console.log(`${file.name}: uploading...`)
                 socket.send(await file.arrayBuffer())
                 socket.close()
+                console.log(`${file.name}: file uploaded!`)
             })
+        })
 
         const imageURL = await fileCreationResponse.text()
         imageURLs.value.push(imageURL)
 
         return null
-
     } catch (e) {
         return `${e}`
     }
