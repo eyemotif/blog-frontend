@@ -81,7 +81,6 @@ onMounted(() => {
     }
 })
 
-// TODO: make parent posts in thread clickable
 </script>
 
 <template>

@@ -17,17 +17,19 @@ if (props.post.reply_to !== null) {
 }
 
 function replyQuoteString(): string {
-    // this is ugly but i dont really give a shit
-    const divider = `· `
-    if (props.post.replies.length > 0 && props.post.quotes.length > 0) {
-        return divider + `${props.post.replies.length} ${props.post.replies.length == 1 ? 'reply'
-            : 'replies'}, ${props.post.quotes.length} ${props.post.quotes.length == 1 ? 'quote'
-                : 'quotes'}`
-    } else if (props.post.replies.length > 0) {
-        return divider + `${props.post.replies.length} ${props.post.replies.length == 1 ? 'reply' : 'replies'}`
-    } else if (props.post.quotes.length > 0) {
-        return divider + `${props.post.quotes.length} ${props.post.quotes.length == 1 ? 'quote'
-            : 'quotes'}`
+    const divider = `·`
+    const replies = props.post.replies.length
+    const quotes = props.post.quotes.length
+
+    const repliesString = `${replies} ${replies == 1 ? 'reply' : 'replies'}`
+    const quotesString = `${quotes} ${quotes == 1 ? 'quote' : 'quotes'}`
+
+    if (replies > 0 && quotes > 0) {
+        return `${divider} ${repliesString}, ${quotesString}`
+    } else if (replies > 0) {
+        return `${divider} ${repliesString}`
+    } else if (quotes > 0) {
+        return `${divider} ${quotesString}`
     } else {
         return ''
     }
