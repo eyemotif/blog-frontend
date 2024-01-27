@@ -53,6 +53,7 @@ onMounted(() => {
 
         const target = event.target as EventTarget & { files: FileList }
 
+        // no Promise.all as most work within uploadImage is done in a callback
         for (let i = 0; i < target.files.length; i++) {
             imageUploadText.value = `uploading file ${i + 1}/${target.files.length}`
             const maybe_error = await uploadImage(target.files[i])
@@ -88,14 +89,17 @@ async function uploadImage(file: File): Promise<string | null> {
             return `creation post request status ${fileCreationResponse.status}`
         }
 
+        const fileBuffer = await file.arrayBuffer()
         const socket = new WebSocket(`wss://blog.frith.gay/api/post/create/image/${route.params.id}/${file.name}`)
+
         socket.addEventListener('open', () => {
             // server will send "pong" when ready
             console.log(`${file.name}: waiting for goahead message...`)
             socket.addEventListener('message', async () => {
                 console.log(`${file.name}: uploading...`)
-                socket.send(await file.arrayBuffer())
-                socket.close()
+                socket.send(fileBuffer)
+                if (socket.readyState != socket.CLOSING && socket.readyState != socket.CLOSED)
+                    socket.close()
                 console.log(`${file.name}: file uploaded!`)
             })
         })

@@ -7,7 +7,7 @@ const { cookies } = useCookies()
 const latestPostMetas: Post[] = JSON.parse(await req('/post/latest/10/0'))
 let latestPosts: [Post, string][] = []
 
-for (const post of latestPostMetas) {
+await Promise.all(latestPostMetas.map(async post => {
     try {
         const text = await postText(post.id, cookies.get('frithblog-session'))
         if (text !== null)
@@ -16,7 +16,7 @@ for (const post of latestPostMetas) {
     catch (err) {
         console.log(`error getting post ${post.id}: ${err}`)
     }
-}
+}))
 </script>
 
 <template>

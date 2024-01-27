@@ -10,7 +10,7 @@ const user: User = JSON.parse(await req(`/user/${route.params.username}`))
 
 let userPosts: [Post, string][] = []
 
-for (const postID of user.posts.reverse()) {
+await Promise.all(user.posts.reverse().map(async postID => {
     try {
         const meta: Post = JSON.parse(await req(`/post/${postID}/meta`))
         const text = await postText(postID, cookies.get('frithblog-session'))
@@ -21,7 +21,7 @@ for (const postID of user.posts.reverse()) {
     catch (err) {
         console.log(`error getting post ${postID}: ${err}`)
     }
-}
+}))
 
 </script>
 
