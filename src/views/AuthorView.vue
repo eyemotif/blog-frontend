@@ -97,7 +97,21 @@ async function uploadImage(file: File): Promise<string | null> {
             console.log(`${file.name}: waiting for goahead message...`)
             socket.addEventListener('message', async () => {
                 console.log(`${file.name}: uploading...`)
-                socket.send(fileBuffer)
+
+                const frameSize = 1000000
+                for (let i = 0; i += frameSize; i <= fileBuffer.byteLength) {
+                    let slice: ArrayBuffer
+                    if (i + frameSize >= fileBuffer.byteLength) {
+                        slice = fileBuffer.slice(i)
+                    } else {
+                        slice = fileBuffer.slice(i, i + frameSize)
+                    }
+
+                    if (slice.byteLength === 0) break
+
+                    socket.send(slice)
+                }
+                
                 if (socket.readyState != socket.CLOSING && socket.readyState != socket.CLOSED)
                     socket.close()
                 console.log(`${file.name}: file uploaded!`)
