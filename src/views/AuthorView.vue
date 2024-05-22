@@ -93,25 +93,25 @@ async function uploadImage(file: File): Promise<string | null> {
         const socket = new WebSocket(`wss://blog.frith.gay/api/post/create/image/${route.params.id}/${file.name}`)
 
         socket.addEventListener('open', () => {
-            // server will send "pong" when ready
-            console.log(`${file.name}: waiting for goahead message...`)
+            console.log(`${file.name}: uploading...`)
+            const frameSize = 1000000
+            let offset = 0
             socket.addEventListener('message', async () => {
-                console.log(`${file.name}: uploading...`)
-
-                const frameSize = 1000000
-                for (let i = 0; i += frameSize; i <= fileBuffer.byteLength) {
-                    let slice: ArrayBuffer
-                    if (i + frameSize >= fileBuffer.byteLength) {
-                        slice = fileBuffer.slice(i)
+                let slice: ArrayBuffer
+                if (offset + frameSize >= fileBuffer.byteLength) {
+                        slice = fileBuffer.slice(offset)
                     } else {
-                        slice = fileBuffer.slice(i, i + frameSize)
-                    }
+                        slice = fileBuffer.slice(offset, offset + frameSize)
+                }
 
-                    if (slice.byteLength === 0) break
+                if (slice.byteLength > 0) {
+                    console.log(`${file.name}: frame ${Math.ceil(offset / frameSize)}/${Math.ceil(file.size / frameSize)}`)
+                    offset += frameSize
 
                     socket.send(slice)
+                    return
                 }
-                
+
                 if (socket.readyState != socket.CLOSING && socket.readyState != socket.CLOSED)
                     socket.close()
                 console.log(`${file.name}: file uploaded!`)
