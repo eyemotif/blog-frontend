@@ -4,6 +4,12 @@ import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useCookies } from 'vue3-cookies'
 
+type ImageUrl = {
+    url: string,
+    framesComplete: number,
+    framesTotal: number
+}
+
 const { cookies } = useCookies()
 const router = useRouter()
 const route = useRoute()
@@ -42,7 +48,7 @@ async function post() {
     }
 }
 
-let imageURLs = ref<string[]>([])
+let imageURLs = ref<ImageUrl[]>([])
 let imageUploadText = ref<string | null>(null)
 
 onMounted(() => {
@@ -91,10 +97,12 @@ async function uploadImage(file: File): Promise<string | null> {
 
         const fileBuffer = await file.arrayBuffer()
         const socket = new WebSocket(`wss://blog.frith.gay/api/post/create/image/${route.params.id}/${file.name}`)
+        let imageUrlsIndex: number
 
         socket.addEventListener('open', () => {
-            console.log(`${file.name}: uploading...`)
             const frameSize = 1000000
+            const framesTotal = Math.ceil(file.size / frameSize)
+
             let offset = 0
             socket.addEventListener('message', async () => {
                 let slice: ArrayBuffer
@@ -105,21 +113,31 @@ async function uploadImage(file: File): Promise<string | null> {
                 }
 
                 if (slice.byteLength > 0) {
-                    console.log(`${file.name}: frame ${Math.ceil(offset / frameSize)}/${Math.ceil(file.size / frameSize)}`)
-                    offset += frameSize
+                    const framesComplete = Math.ceil(offset / frameSize)
+                    imageURLs.value[imageUrlsIndex].framesComplete = framesComplete
+                    imageURLs.value[imageUrlsIndex].framesTotal = framesTotal
 
                     socket.send(slice)
+                    offset += frameSize
+
                     return
                 }
 
                 if (socket.readyState != socket.CLOSING && socket.readyState != socket.CLOSED)
                     socket.close()
-                console.log(`${file.name}: file uploaded!`)
+
+                imageURLs.value[imageUrlsIndex].framesComplete = imageURLs.value[imageUrlsIndex].framesTotal
             })
         })
 
         const imageURL = await fileCreationResponse.text()
-        imageURLs.value.push(imageURL)
+        imageURLs.value.push({
+            url: imageURL,
+            framesTotal: 1,
+            framesComplete: 0
+        })
+        // this wont have a read-before-write because this function is `await`ed
+        imageUrlsIndex = imageURLs.value.length - 1
 
         return null
     } catch (e) {
@@ -157,8 +175,10 @@ function insertImageMarkdown(url: string) {
         <p>{{ imageUploadText }}</p>
         <ul id="images" v-if="imageURLs.length > 0">
             <li v-for="url in imageURLs">
-                <span @click="insertImageMarkdown(url)">
-                    {{ url }}
+                <span @click="insertImageMarkdown(url.url)">
+                    {{ url.url }} {{url.framesComplete < url.framesTotal ?
+                    `${Math.round(url.framesComplete /  url.framesTotal *
+                    100)}%` : '' }}
                 </span>
             </li>
         </ul>
