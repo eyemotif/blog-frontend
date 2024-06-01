@@ -87,7 +87,12 @@ onMounted(async () => {
         </RouterLink>:
     </header>
 
-    <article :class="getClass()" :id="`post-${post.id}`" @click="() => goToPost(post.id)" v-html="$props.text">
+    <article 
+        :class="getClass()" 
+        :id="`post-${post.id}`" 
+        @click="() => goToPost(post.id)" 
+        v-html="$props.text"
+    >
     </article>
     <footer>
         {{ (new Date(post.timestamp)).toLocaleString() }}

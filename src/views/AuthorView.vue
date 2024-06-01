@@ -144,15 +144,23 @@ function insertImageMarkdown(url: string) {
     <form id="form" @submit="e => { e.preventDefault(); post() }">
         <textarea id="text" name="text"></textarea>
         <label for="upload">upload images: </label>
-        <input type="file" id="upload" multiple
-            accept="image/apng,image/avif,image/gif,image/jpeg,image/png,image/svg+xml,image/webp,">
+        <input 
+            id="upload"
+            type="file"
+            multiple
+            accept="image/apng,image/avif,image/gif,image/jpeg,image/png,image/svg+xml,image/webp,"
+        >
         <input type="submit" value="post">
     </form>
     <hr>
     <div id="status">
         <p>{{ imageUploadText }}</p>
         <ul id="images" v-if="imageURLs.length > 0">
-            <li v-for="url in imageURLs"><span @click="insertImageMarkdown(url)">{{ url }}</span></li>
+            <li v-for="url in imageURLs">
+                <span @click="insertImageMarkdown(url)">
+                    {{ url }}
+                </span>
+            </li>
         </ul>
     </div>
 </template>

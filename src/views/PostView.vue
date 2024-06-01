@@ -85,7 +85,8 @@ onMounted(() => {
 
 <template>
     <header id="title" @click="() => $router.push('/')">
-        post</header>
+        post
+    </header>
     <hr>
     <section v-for="[post, text] in thread">
         <PostComponent v-if="post.id === $route.params.id" :post="post" :text="text" large />

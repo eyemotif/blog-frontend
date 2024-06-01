@@ -50,8 +50,10 @@ async function submitLogin() {
         <input type="password" id="password" name="password"><br>
         <input id="submit" type="submit" value="submit">
     </form>
-    <footer>this site uses cookies to store your login session token for up to
-        24 hours after you log in. that's it.</footer>
+    <footer>
+        this site uses cookies to store your login session token for up to
+        24 hours after you log in. that's it.
+    </footer>
 </template>
 
 <style scoped>
